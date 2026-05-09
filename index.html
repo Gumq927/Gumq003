@@ -16,7 +16,7 @@
             margin: 0;
             padding: 24px 20px;
             color: #1f3b2c;
-            font-size: 18px;  /* 基础字号从16调至18 */
+            font-size: 18px;
         }
 
         .container {
@@ -31,7 +31,7 @@
         }
 
         h1 {
-            font-size: 2.2rem;   /* 稍大 */
+            font-size: 2.2rem;
             margin-top: 0;
             margin-bottom: 8px;
             font-weight: 800;
@@ -62,7 +62,7 @@
         }
 
         .plasmid-container {
-            flex: 1.2;      /* 图谱区域占比减小，让右侧更大 */
+            flex: 1.2;
             min-width: 380px;
             text-align: center;
         }
@@ -86,7 +86,7 @@
         }
 
         .quiz-side {
-            flex: 1.8;      /* 右侧占比加大原1.2->1.8 */
+            flex: 1.8;
             background: #f4f7ec;
             border-radius: 32px;
             padding: 24px 30px;
@@ -107,14 +107,6 @@
             font-size: 1.2rem;
         }
 
-        .option-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
@@ -126,7 +118,21 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 1rem;   /* 选项文字稍大 */
+            font-size: 1rem;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 16px 0;
+        }
+        .radio-group label {
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
         }
 
         .btn-check {
@@ -292,10 +298,10 @@
             .quiz-side {
                 padding: 18px;
             }
-            .checkbox-group {
+            .checkbox-group, .radio-group {
                 gap: 12px;
             }
-            .checkbox-group label {
+            .checkbox-group label, .radio-group label {
                 font-size: 0.9rem;
             }
             body {
@@ -329,7 +335,7 @@
                 <div id="enzymeFb" class="feedback"></div>
             </div>
             <div class="quiz-item">
-                <label>📌 (2) 与单酶切相比，双酶切的优点有哪些？（多选，答案ABC）</label>
+                <label>📌 (2) 与单酶切相比，双酶切的优点有哪些？（多选）</label>
                 <div class="checkbox-group" id="advantageCheckboxes">
                     <label><input type="checkbox" value="A"> A. 防止目的基因和质粒反向连接</label>
                     <label><input type="checkbox" value="B"> B. 防止目的基因自身环化</label>
@@ -342,22 +348,37 @@
         </div>
     </div>
 
-    <!-- 第二部分：ppk基因 PCR扩增 + 排序 + 引物设计选择题 -->
+    <!-- 第二部分：ppk基因 PCR扩增 + 新增问题 -->
     <div class="part-two">
         <h2 style="font-size:1.6rem; margin:0 0 6px 0;">🧪 第二部分 · ppk基因的获取（PCR扩增）</h2>
-        <!-- 引物设计依据选择题 -->
-        <div class="quiz-item" style="background:#f0f4e4; padding:16px 22px; border-radius:28px; margin-bottom:25px;">
-            <label style="font-size:1.1rem;">🎯 引物设计依据：PCR扩增ppk基因时，应在引物两端添加哪两种限制酶识别序列以便定向克隆？</label>
-            <div class="checkbox-group" id="primerCheckboxes">
-                <label><input type="checkbox" value="BamHI_EcoRI"> BamHI 和 EcoRI</label>
-                <label><input type="checkbox" value="BamHI_HindIII"> BamHI 和 HindIII</label>
-                <label><input type="checkbox" value="NheI_HindIII"> NheI 和 HindIII</label>
-                <label><input type="checkbox" value="EcoRI_BamHI"> EcoRI 和 BamHI</label>
+        
+        <!-- 新增问题1：引物设计依据 -->
+        <div class="q-card" style="margin-bottom:20px; background:#fef6e0;">
+            <p>❓ 1. 扩增ppk基因时，引物的设计应该依据哪些序列？（多选）</p>
+            <div class="checkbox-group" id="primerSeqCheckboxes">
+                <label><input type="checkbox" value="BamHI"> A. BamHI识别序列</label>
+                <label><input type="checkbox" value="NheI"> B. NheI识别序列</label>
+                <label><input type="checkbox" value="HindIII"> C. HindIII识别序列</label>
+                <label><input type="checkbox" value="EcoRI"> D. EcoRI识别序列</label>
+                <label><input type="checkbox" value="FullPpk"> E. ppk基因完整序列</label>
+                <label><input type="checkbox" value="PartPpk"> F. ppk基因部分序列</label>
             </div>
-            <button class="btn-check" id="checkPrimer">✓ 核对答案</button>
-            <div id="primerFb" class="feedback"></div>
+            <button id="checkPrimerSeq" class="btn-check">核对答案</button>
+            <div id="primerSeqFb" class="feedback"></div>
         </div>
 
+        <!-- 新增问题2：限制酶识别序列添加位置 -->
+        <div class="q-card" style="margin-bottom:20px; background:#fef6e0;">
+            <p>❓ 2. 限制酶识别序列应当增加在引物的哪一端？（单选）</p>
+            <div class="radio-group" id="enzymeEndRadios">
+                <label><input type="radio" name="enzymeEnd" value="3"> A. 3'端</label>
+                <label><input type="radio" name="enzymeEnd" value="5"> B. 5'端</label>
+            </div>
+            <button id="checkEnzymeEnd" class="btn-check">核对答案</button>
+            <div id="enzymeEndFb" class="feedback"></div>
+        </div>
+
+        <!-- PCR操作步骤排序（原有） -->
         <div class="pcr-steps-game">
             <div class="steps-list">
                 <div style="font-weight:700; margin-bottom:16px; font-size:1.1rem;">📖 PCR操作步骤（拖动排序）—— 拖拽卡片调整顺序</div>
@@ -372,7 +393,7 @@
         </div>
     </div>
 
-    <!-- 第三部分：基因表达载体的构建和导入受体细胞 -->
+    <!-- 第三部分：基因表达载体的构建和导入受体细胞 + 新增问题4 -->
     <div class="part-three">
         <h2 style="font-size:1.6rem; margin:0 0 8px 0;">🔬 第三部分 · 基因表达载体的构建和导入受体细胞</h2>
         <div class="questions-grid">
@@ -386,29 +407,41 @@
                     <label><input type="checkbox" value="DNA连接酶"> E. DNA连接酶</label>
                 </div>
                 <button id="checkLigase" class="btn-check">核实</button>
-                <div id="ligaseFb" class="feedback" style="margin-top:8px;"></div>
+                <div id="ligaseFb" class="feedback"></div>
             </div>
             <div class="q-card">
                 <p>❓ 2. 将重组质粒导入聚磷菌（革兰氏阴性菌）前，常用哪种化学试剂处理细菌，使之成为感受态细胞？</p>
-                <div class="checkbox-group" id="competentCheckboxes">
-                    <label><input type="checkbox" value="Ca2+"> Ca²⁺</label>
-                    <label><input type="checkbox" value="Cl-"> Cl⁻</label>
-                    <label><input type="checkbox" value="Na+"> Na⁺</label>
-                    <label><input type="checkbox" value="Mg2+"> Mg²⁺</label>
+                <div class="radio-group" id="competentRadios">
+                    <label><input type="radio" name="competent" value="Ca2+"> Ca²⁺</label>
+                    <label><input type="radio" name="competent" value="Cl-"> Cl⁻</label>
+                    <label><input type="radio" name="competent" value="Na+"> Na⁺</label>
+                    <label><input type="radio" name="competent" value="Mg2+"> Mg²⁺</label>
                 </div>
                 <button id="checkCompetent" class="btn-check">核实</button>
-                <div id="competentFb" class="feedback" style="margin-top:8px;"></div>
+                <div id="competentFb" class="feedback"></div>
             </div>
             <div class="q-card">
                 <p>❓ 3. 如何鉴定ppk基因在聚磷菌中成功表达了蛋白质产物？</p>
-                <div class="checkbox-group" id="expressCheckboxes">
-                    <label><input type="checkbox" value="PCR"> A. PCR技术</label>
-                    <label><input type="checkbox" value="分子杂交"> B. 分子杂交技术</label>
-                    <label><input type="checkbox" value="抗原抗体杂交"> C. 抗原-抗体杂交技术</label>
-                    <label><input type="checkbox" value="纯培养"> D. 微生物的纯培养技术</label>
+                <div class="radio-group" id="expressRadios">
+                    <label><input type="radio" name="express" value="PCR"> A. PCR技术</label>
+                    <label><input type="radio" name="express" value="分子杂交"> B. 分子杂交技术</label>
+                    <label><input type="radio" name="express" value="抗原抗体杂交"> C. 抗原-抗体杂交技术</label>
+                    <label><input type="radio" name="express" value="纯培养"> D. 微生物的纯培养技术</label>
                 </div>
                 <button id="checkExpress" class="btn-check">核实</button>
-                <div id="expressFb" class="feedback" style="margin-top:8px;"></div>
+                <div id="expressFb" class="feedback"></div>
+            </div>
+            <!-- 新增问题4 -->
+            <div class="q-card">
+                <p>❓ 4. 如何鉴定聚磷菌中导入了有T7强启动子的ppk基因？</p>
+                <div class="radio-group" id="integrateRadios">
+                    <label><input type="radio" name="integrate" value="PCR_part"> A. 以ppk基因部分序列为引物进行PCR</label>
+                    <label><input type="radio" name="integrate" value="probe_part"> B. 以ppk基因部分序列设计探针进行分子杂交</label>
+                    <label><input type="radio" name="integrate" value="PCR_T7_ppk"> C. 以T7强启动子到ppk基因部分序列为引物进行PCR</label>
+                    <label><input type="radio" name="integrate" value="probe_T7_ppk"> D. 以T7强启动子到ppk基因部分序列设计探针进行分子杂交</label>
+                </div>
+                <button id="checkIntegrate" class="btn-check">核实</button>
+                <div id="integrateFb" class="feedback"></div>
             </div>
         </div>
     </div>
@@ -545,7 +578,8 @@
         drawPlasmid();
         window.addEventListener('resize', () => drawPlasmid());
 
-        // ---------- 第一部分交互 ----------
+        // ---------- 第一部分交互（问题1、2）----------
+        // 问题1：限制酶选择，正确答案BamHI和HindIII
         const checkEnzymeBtn = document.getElementById('checkEnzyme');
         const enzymeFb = document.getElementById('enzymeFb');
         checkEnzymeBtn.addEventListener('click', () => {
@@ -561,6 +595,7 @@
             }
         });
 
+        // 问题2：双酶切优点，正确答案A、B、C
         const checkAdvantageBtn = document.getElementById('checkAdvantage');
         const advantageFb = document.getElementById('advantageFb');
         checkAdvantageBtn.addEventListener('click', () => {
@@ -576,22 +611,42 @@
             }
         });
 
-        const checkPrimerBtn = document.getElementById('checkPrimer');
-        const primerFb = document.getElementById('primerFb');
-        checkPrimerBtn.addEventListener('click', () => {
-            const checkboxes = document.querySelectorAll('#primerCheckboxes input');
+        // ---------- 第二部分新增问题 ----------
+        // 新增问题1：引物设计依据（多选）正确答案：A (BamHI), C (HindIII), F (ppk基因部分序列)
+        const checkPrimerSeqBtn = document.getElementById('checkPrimerSeq');
+        const primerSeqFb = document.getElementById('primerSeqFb');
+        checkPrimerSeqBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#primerSeqCheckboxes input');
             const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-            const correct = selected.includes('BamHI_HindIII') && selected.length === 1;
+            const correct = selected.includes('BamHI') && selected.includes('HindIII') && selected.includes('PartPpk') && selected.length === 3;
             if (correct) {
-                primerFb.innerHTML = '✅ 正确！ppk基因扩增时，上游引物加BamHI位点，下游引物加HindIII位点，便于定向克隆。';
-                primerFb.className = 'feedback correct-fb';
+                primerSeqFb.innerHTML = '✅ 正确！引物设计应依据BamHI和HindIII识别序列以及ppk基因部分序列，以便定向扩增和克隆。';
+                primerSeqFb.className = 'feedback correct-fb';
             } else {
-                primerFb.innerHTML = '❌ 正确答案是：BamHI 和 HindIII。请重新选择。';
-                primerFb.className = 'feedback wrong-fb';
+                primerSeqFb.innerHTML = '❌ 正确答案是 A (BamHI)、C (HindIII) 和 F (ppk基因部分序列)。';
+                primerSeqFb.className = 'feedback wrong-fb';
             }
         });
 
-        // ---------- PCR步骤排序（使用耐高温的DNA聚合酶）----------
+        // 新增问题2：限制酶识别序列加在引物哪一端？单选，答案B (5'端)
+        const checkEnzymeEndBtn = document.getElementById('checkEnzymeEnd');
+        const enzymeEndFb = document.getElementById('enzymeEndFb');
+        checkEnzymeEndBtn.addEventListener('click', () => {
+            const radios = document.querySelectorAll('#enzymeEndRadios input');
+            let selectedValue = null;
+            for (let r of radios) {
+                if (r.checked) { selectedValue = r.value; break; }
+            }
+            if (selectedValue === '5') {
+                enzymeEndFb.innerHTML = '✅ 正确！限制酶识别序列应当添加在引物的5\'端，以保留酶切位点功能。';
+                enzymeEndFb.className = 'feedback correct-fb';
+            } else {
+                enzymeEndFb.innerHTML = '❌ 正确答案是 B. 5\'端。';
+                enzymeEndFb.className = 'feedback wrong-fb';
+            }
+        });
+
+        // ---------- PCR步骤排序（耐高温DNA聚合酶）----------
         const standardSteps = [
             "变性: 加热至94-98℃，DNA双链解开",
             "退火: 降温至50-65℃，引物与模板特异性结合",
@@ -687,7 +742,7 @@
         currentSteps = shuffleArray([...standardSteps]);
         renderStepCards();
 
-        // ---------- 第三部分交互 ----------
+        // ---------- 第三部分原有交互 ----------
         const checkLigaseBtn = document.getElementById('checkLigase');
         const ligaseFb = document.getElementById('ligaseFb');
         checkLigaseBtn.addEventListener('click', () => {
@@ -706,10 +761,10 @@
         const checkCompetentBtn = document.getElementById('checkCompetent');
         const competentFb = document.getElementById('competentFb');
         checkCompetentBtn.addEventListener('click', () => {
-            const checkboxes = document.querySelectorAll('#competentCheckboxes input');
-            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-            const correct = selected.includes('Ca2+') && selected.length === 1;
-            if (correct) {
+            const radios = document.querySelectorAll('#competentRadios input');
+            let selected = null;
+            for (let r of radios) if (r.checked) { selected = r.value; break; }
+            if (selected === 'Ca2+') {
                 competentFb.innerHTML = '✅ 正确！使用 Ca²⁺（钙离子）处理细菌，使细胞成为感受态，便于摄取外源DNA。';
                 competentFb.className = 'feedback correct-fb';
             } else {
@@ -721,15 +776,31 @@
         const checkExpressBtn = document.getElementById('checkExpress');
         const expressFb = document.getElementById('expressFb');
         checkExpressBtn.addEventListener('click', () => {
-            const checkboxes = document.querySelectorAll('#expressCheckboxes input');
-            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-            const correct = selected.includes('抗原抗体杂交') && selected.length === 1;
-            if (correct) {
+            const radios = document.querySelectorAll('#expressRadios input');
+            let selected = null;
+            for (let r of radios) if (r.checked) { selected = r.value; break; }
+            if (selected === '抗原抗体杂交') {
                 expressFb.innerHTML = '✅ 正确！抗原-抗体杂交技术（Western Blot）可特异性检测ppk蛋白的表达。';
                 expressFb.className = 'feedback correct-fb';
             } else {
                 expressFb.innerHTML = '❌ 正确答案是 C. 抗原-抗体杂交技术。';
                 expressFb.className = 'feedback wrong-fb';
+            }
+        });
+
+        // 新增问题4：鉴定导入了有T7强启动子的ppk基因，答案 D（以T7强启动子到ppk基因部分序列设计探针进行分子杂交）
+        const checkIntegrateBtn = document.getElementById('checkIntegrate');
+        const integrateFb = document.getElementById('integrateFb');
+        checkIntegrateBtn.addEventListener('click', () => {
+            const radios = document.querySelectorAll('#integrateRadios input');
+            let selected = null;
+            for (let r of radios) if (r.checked) { selected = r.value; break; }
+            if (selected === 'probe_T7_ppk') {
+                integrateFb.innerHTML = '✅ 正确！以T7强启动子到ppk基因部分序列设计探针进行分子杂交，可特异性检测整合的完整表达盒。';
+                integrateFb.className = 'feedback correct-fb';
+            } else {
+                integrateFb.innerHTML = '❌ 正确答案是 D. 以T7强启动子到ppk基因部分序列设计探针进行分子杂交。';
+                integrateFb.className = 'feedback wrong-fb';
             }
         });
     })();
