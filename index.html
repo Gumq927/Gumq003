@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>高中生物·基因工程模拟 | 质粒与PCR测验</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* 整体字号调大 */
+        body {
+            background: linear-gradient(145deg, #e9f0e3 0%, #c8ddb5 100%);
+            font-family: 'Segoe UI', 'Roboto', 'PingFang SC', '微软雅黑', system-ui, sans-serif;
+            margin: 0;
+            padding: 24px 20px;
+            color: #1f3b2c;
+            font-size: 18px;  /* 基础字号从16调至18 */
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 252, 240, 0.95);
+            backdrop-filter: blur(2px);
+            border-radius: 48px;
+            box-shadow: 0 20px 35px rgba(40, 60, 20, 0.25);
+            overflow: hidden;
+            padding: 24px 28px 40px 28px;
+        }
+
+        h1 {
+            font-size: 2.2rem;   /* 稍大 */
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e5a3a, #2c7a47);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sub {
+            border-left: 5px solid #4caf50;
+            padding-left: 16px;
+            color: #2e5c3e;
+            font-weight: 500;
+            margin-bottom: 32px;
+            font-size: 1.1rem;
+        }
+
+        .part-one {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+            background: #ffffff;
+            border-radius: 36px;
+            padding: 20px 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .plasmid-container {
+            flex: 1.2;      /* 图谱区域占比减小，让右侧更大 */
+            min-width: 380px;
+            text-align: center;
+        }
+
+        .plasmid-canvas {
+            background: #fefcf5;
+            border-radius: 32px;
+            padding: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 28px;
+            background: #fef9e6;
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+
+        .quiz-side {
+            flex: 1.8;      /* 右侧占比加大原1.2->1.8 */
+            background: #f4f7ec;
+            border-radius: 32px;
+            padding: 24px 30px;
+            box-shadow: inset 0 1px 4px #fff8, 0 6px 12px rgba(0,0,0,0.08);
+        }
+
+        .quiz-item {
+            margin-bottom: 32px;
+            border-bottom: 1px dashed #c2d6ae;
+            padding-bottom: 22px;
+        }
+
+        .quiz-item label {
+            font-weight: 700;
+            color: #1f542c;
+            display: block;
+            margin-bottom: 14px;
+            font-size: 1.2rem;
+        }
+
+        .option-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 16px 0;
+        }
+        .checkbox-group label {
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;   /* 选项文字稍大 */
+        }
+
+        .btn-check {
+            background: #d0e2bc;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            color: #2c5e2d;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .btn-check:hover {
+            background: #b3cb98;
+            transform: scale(0.96);
+        }
+
+        .feedback {
+            font-size: 1rem;
+            margin-top: 14px;
+            padding: 10px 16px;
+            border-radius: 28px;
+            background: #eef3e6;
+            color: #1d4d1d;
+        }
+
+        .correct-fb {
+            background: #c8e6b5;
+            color: #1c5a2a;
+            border-left: 5px solid #2e7d32;
+        }
+
+        .wrong-fb {
+            background: #ffe1cf;
+            color: #b13e3e;
+            border-left: 5px solid #f44336;
+        }
+
+        .part-two {
+            background: #eef3e3;
+            border-radius: 36px;
+            padding: 20px 28px;
+            margin-bottom: 50px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+            font-size: 1rem;
+        }
+
+        .pcr-steps-game {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .steps-list {
+            flex: 2;
+            background: #fffcf0;
+            border-radius: 28px;
+            padding: 20px;
+        }
+
+        .step-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .step-card {
+            background: #fff2db;
+            border-radius: 60px;
+            padding: 12px 22px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            border: 1px solid #e2d5b6;
+            font-weight: 500;
+            cursor: grab;
+            transition: 0.1s;
+            font-size: 1rem;
+        }
+
+        .step-card:active {
+            cursor: grabbing;
+        }
+
+        .step-card span:first-child {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .btn-sort {
+            background: #4c7a3a;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 24px;
+            margin: 8px 10px 8px 0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .part-three {
+            background: #e9edd9;
+            border-radius: 36px;
+            padding: 20px 28px;
+            font-size: 1rem;
+        }
+
+        .questions-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+            margin-top: 20px;
+        }
+
+        .q-card {
+            background: white;
+            border-radius: 28px;
+            padding: 18px 26px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .q-card p {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        hr {
+            margin: 20px 0;
+            border-color: #caddb5;
+        }
+
+        button {
+            background-color: #3c7646;
+            border: none;
+            color: white;
+            padding: 8px 22px;
+            border-radius: 28px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #4a6b38;
+        }
+
+        @media (max-width: 780px) {
+            .container {
+                padding: 16px;
+            }
+            .plasmid-container {
+                min-width: 280px;
+            }
+            .quiz-side {
+                padding: 18px;
+            }
+            .checkbox-group {
+                gap: 12px;
+            }
+            .checkbox-group label {
+                font-size: 0.9rem;
+            }
+            body {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🧬 基因工程操作模拟器 | 聚磷菌改造实验</h1>
+    <div class="sub">第一部分：质粒的选择</div>
+
+    <!-- 第一部分：环形质粒图谱 + 选择题 -->
+    <div class="part-one">
+        <div class="plasmid-container">
+            <div class="plasmid-canvas">
+                <canvas id="plasmidCanvas" width="600" height="600" style="width:100%; height:auto; max-width:600px; aspect-ratio:1/1"></canvas>
+            </div>
+        </div>
+        <div class="quiz-side">
+            <div class="quiz-item">
+                <label>📌 (1) 为了将ppk基因插入T7强启动子和终止子之间，应选择哪两种限制酶切割质粒？</label>
+                <div class="checkbox-group" id="enzymeCheckboxes">
+                    <label><input type="checkbox" value="BamHI"> BamHI</label>
+                    <label><input type="checkbox" value="NheI"> NheI</label>
+                    <label><input type="checkbox" value="HindIII"> HindIII</label>
+                    <label><input type="checkbox" value="EcoRI"> EcoRI</label>
+                </div>
+                <button class="btn-check" id="checkEnzyme">✓ 核对答案</button>
+                <div id="enzymeFb" class="feedback"></div>
+            </div>
+            <div class="quiz-item">
+                <label>📌 (2) 与单酶切相比，双酶切的优点有哪些？（多选，答案ABC）</label>
+                <div class="checkbox-group" id="advantageCheckboxes">
+                    <label><input type="checkbox" value="A"> A. 防止目的基因和质粒反向连接</label>
+                    <label><input type="checkbox" value="B"> B. 防止目的基因自身环化</label>
+                    <label><input type="checkbox" value="C"> C. 防止质粒自身环化</label>
+                    <label><input type="checkbox" value="D"> D. 保证目的基因与质粒直接连接</label>
+                </div>
+                <button class="btn-check" id="checkAdvantage">✓ 核对答案</button>
+                <div id="advantageFb" class="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第二部分：ppk基因 PCR扩增 + 排序 + 引物设计选择题 -->
+    <div class="part-two">
+        <h2 style="font-size:1.6rem; margin:0 0 6px 0;">🧪 第二部分 · ppk基因的获取（PCR扩增）</h2>
+        <!-- 引物设计依据选择题 -->
+        <div class="quiz-item" style="background:#f0f4e4; padding:16px 22px; border-radius:28px; margin-bottom:25px;">
+            <label style="font-size:1.1rem;">🎯 引物设计依据：PCR扩增ppk基因时，应在引物两端添加哪两种限制酶识别序列以便定向克隆？</label>
+            <div class="checkbox-group" id="primerCheckboxes">
+                <label><input type="checkbox" value="BamHI_EcoRI"> BamHI 和 EcoRI</label>
+                <label><input type="checkbox" value="BamHI_HindIII"> BamHI 和 HindIII</label>
+                <label><input type="checkbox" value="NheI_HindIII"> NheI 和 HindIII</label>
+                <label><input type="checkbox" value="EcoRI_BamHI"> EcoRI 和 BamHI</label>
+            </div>
+            <button class="btn-check" id="checkPrimer">✓ 核对答案</button>
+            <div id="primerFb" class="feedback"></div>
+        </div>
+
+        <div class="pcr-steps-game">
+            <div class="steps-list">
+                <div style="font-weight:700; margin-bottom:16px; font-size:1.1rem;">📖 PCR操作步骤（拖动排序）—— 拖拽卡片调整顺序</div>
+                <div id="stepContainer" class="step-cards"></div>
+                <div style="margin-top:20px;">
+                    <button id="checkPcrOrder" class="btn-sort">🔍 验证顺序</button>
+                    <button id="resetPcrOrder" class="btn-sort">🔄 打乱顺序</button>
+                    <button id="showPcrAnswer" class="btn-sort">📘 显示正确顺序</button>
+                </div>
+                <div id="pcrFeedback" class="feedback" style="margin-top:15px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第三部分：基因表达载体的构建和导入受体细胞 -->
+    <div class="part-three">
+        <h2 style="font-size:1.6rem; margin:0 0 8px 0;">🔬 第三部分 · 基因表达载体的构建和导入受体细胞</h2>
+        <div class="questions-grid">
+            <div class="q-card">
+                <p>❓ 1. 将ppk基因扩增产物插入空白质粒，构建重组质粒时需要使用的工具是？（多选）</p>
+                <div class="checkbox-group" id="ligaseCheckboxes">
+                    <label><input type="checkbox" value="BamHI"> A. BamHI</label>
+                    <label><input type="checkbox" value="NheI"> B. NheI</label>
+                    <label><input type="checkbox" value="HindIII"> C. HindIII</label>
+                    <label><input type="checkbox" value="EcoRI"> D. EcoRI</label>
+                    <label><input type="checkbox" value="DNA连接酶"> E. DNA连接酶</label>
+                </div>
+                <button id="checkLigase" class="btn-check">核实</button>
+                <div id="ligaseFb" class="feedback" style="margin-top:8px;"></div>
+            </div>
+            <div class="q-card">
+                <p>❓ 2. 将重组质粒导入聚磷菌（革兰氏阴性菌）前，常用哪种化学试剂处理细菌，使之成为感受态细胞？</p>
+                <div class="checkbox-group" id="competentCheckboxes">
+                    <label><input type="checkbox" value="Ca2+"> Ca²⁺</label>
+                    <label><input type="checkbox" value="Cl-"> Cl⁻</label>
+                    <label><input type="checkbox" value="Na+"> Na⁺</label>
+                    <label><input type="checkbox" value="Mg2+"> Mg²⁺</label>
+                </div>
+                <button id="checkCompetent" class="btn-check">核实</button>
+                <div id="competentFb" class="feedback" style="margin-top:8px;"></div>
+            </div>
+            <div class="q-card">
+                <p>❓ 3. 如何鉴定ppk基因在聚磷菌中成功表达了蛋白质产物？</p>
+                <div class="checkbox-group" id="expressCheckboxes">
+                    <label><input type="checkbox" value="PCR"> A. PCR技术</label>
+                    <label><input type="checkbox" value="分子杂交"> B. 分子杂交技术</label>
+                    <label><input type="checkbox" value="抗原抗体杂交"> C. 抗原-抗体杂交技术</label>
+                    <label><input type="checkbox" value="纯培养"> D. 微生物的纯培养技术</label>
+                </div>
+                <button id="checkExpress" class="btn-check">核实</button>
+                <div id="expressFb" class="feedback" style="margin-top:8px;"></div>
+            </div>
+        </div>
+    </div>
+    <footer>🧫 拖拽排序PCR步骤 | 注意多项选择 | 点击核对答案</footer>
+</div>
+
+<script>
+    (function() {
+        // ---------- 质粒绘图（保持不变）----------
+        const canvas = document.getElementById('plasmidCanvas');
+        const ctx = canvas.getContext('2d');
+        const size = 600;
+        canvas.width = size;
+        canvas.height = size;
+        const cx = size/2, cy = size/2;
+        const rOuter = 230;
+        const rInner = 200;
+
+        function degToRad(deg) { return deg * Math.PI / 180; }
+
+        function drawModule(startDeg, endDeg, fillColor = '#555555') {
+            const startRad = degToRad(startDeg);
+            const endRad = degToRad(endDeg);
+            ctx.beginPath();
+            ctx.arc(cx, cy, rOuter, startRad, endRad);
+            const x1 = cx + rInner * Math.cos(endRad);
+            const y1 = cy + rInner * Math.sin(endRad);
+            ctx.lineTo(x1, y1);
+            ctx.arc(cx, cy, rInner, endRad, startRad, true);
+            ctx.closePath();
+            ctx.fillStyle = fillColor;
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+        }
+
+        function addArrowhead(moduleEndDeg, lengthDeg = 10) {
+            const startDeg = moduleEndDeg;
+            const endDeg = moduleEndDeg + lengthDeg;
+            const startRad = degToRad(startDeg);
+            const endRad = degToRad(endDeg);
+            ctx.beginPath();
+            ctx.arc(cx, cy, rOuter, startRad, endRad);
+            const x1 = cx + rInner * Math.cos(endRad);
+            const y1 = cy + rInner * Math.sin(endRad);
+            ctx.lineTo(x1, y1);
+            ctx.arc(cx, cy, rInner, endRad, startRad, true);
+            ctx.closePath();
+            ctx.fillStyle = '#555555';
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+        }
+
+        function addExternalSite(deg, label, color = 'black', textOffset = 34) {
+            const rad = degToRad(deg);
+            const x1 = cx + rOuter * Math.cos(rad);
+            const y1 = cy + rOuter * Math.sin(rad);
+            const x2 = cx + (rOuter + 18) * Math.cos(rad);
+            const y2 = cy + (rOuter + 18) * Math.sin(rad);
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            const txtX = cx + (rOuter + textOffset) * Math.cos(rad);
+            const txtY = cy + (rOuter + textOffset - 4) * Math.sin(rad);
+            ctx.font = "bold 15px 'Segoe UI', 'PingFang SC'";
+            ctx.fillStyle = '#1f3b2c';
+            ctx.fillText(label, txtX - 12, txtY - 6);
+        }
+
+        function labelModule(deg, text, offset = 42, yShift = 0) {
+            const rad = degToRad(deg);
+            const x = cx + (rOuter + offset) * Math.cos(rad);
+            const y = cy + (rOuter + offset) * Math.sin(rad);
+            ctx.font = "bold 15px 'Segoe UI', 'PingFang SC'";
+            ctx.fillStyle = '#2c3e2b';
+            ctx.fillText(text, x - 28, y + yShift);
+        }
+
+        function addKanInternalNheI(deg) {
+            const rad = degToRad(deg);
+            const x1 = cx + rInner * Math.cos(rad);
+            const y1 = cy + rInner * Math.sin(rad);
+            const x2 = cx + (rOuter + 15) * Math.cos(rad);
+            const y2 = cy + (rOuter + 15) * Math.sin(rad);
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            const txtX = cx + (rOuter + 40) * Math.cos(rad);
+            const txtY = cy + (rOuter + 38) * Math.sin(rad);
+            ctx.font = "bold 15px 'Segoe UI', 'PingFang SC'";
+            ctx.fillStyle = '#1f3b2c';
+            ctx.fillText("Nhe I", txtX - 12, txtY - 6);
+        }
+
+        function drawPlasmid() {
+            ctx.clearRect(0, 0, size, size);
+            ctx.beginPath();
+            ctx.arc(cx, cy, rOuter, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(cx, cy, rInner, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#888888';
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            drawModule(300, 335, '#555555');
+            addArrowhead(335, 10);
+            labelModule(317, 'T7强启动子', 44, 0);
+
+            addExternalSite(348, 'BamHI', 'black', 36);
+            addExternalSite(12, 'Nhe I', 'black', 36);
+            addExternalSite(32, 'Hind III', 'black', 36);
+            addExternalSite(52, 'EcoR I', 'black', 36);
+
+            drawModule(100, 160, '#555555');
+            labelModule(130, '终止子', 44, 0);
+
+            drawModule(190, 250, '#555555');
+            labelModule(220, '卡那霉素抗性基因', 48, 0);
+            addKanInternalNheI(215);
+        }
+        drawPlasmid();
+        window.addEventListener('resize', () => drawPlasmid());
+
+        // ---------- 第一部分交互 ----------
+        const checkEnzymeBtn = document.getElementById('checkEnzyme');
+        const enzymeFb = document.getElementById('enzymeFb');
+        checkEnzymeBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#enzymeCheckboxes input');
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+            const correct = selected.includes('BamHI') && selected.includes('HindIII') && selected.length === 2;
+            if (correct) {
+                enzymeFb.innerHTML = '✅ 正确！BamHI 和 HindIII 双酶切后，质粒产生与ppk基因PCR产物互补的黏性末端，实现定向克隆。';
+                enzymeFb.className = 'feedback correct-fb';
+            } else {
+                enzymeFb.innerHTML = '❌ 正确答案是 BamHI 和 HindIII。请重新选择。';
+                enzymeFb.className = 'feedback wrong-fb';
+            }
+        });
+
+        const checkAdvantageBtn = document.getElementById('checkAdvantage');
+        const advantageFb = document.getElementById('advantageFb');
+        checkAdvantageBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#advantageCheckboxes input');
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+            const correct = selected.includes('A') && selected.includes('B') && selected.includes('C') && selected.length === 3;
+            if (correct) {
+                advantageFb.innerHTML = '✅ 正确！双酶切可防止目的基因和质粒反向连接、防止目的基因自身环化、防止质粒自身环化。';
+                advantageFb.className = 'feedback correct-fb';
+            } else {
+                advantageFb.innerHTML = '❌ 正确答案是 A、B、C。双酶切避免反向连接、防止自身环化。';
+                advantageFb.className = 'feedback wrong-fb';
+            }
+        });
+
+        const checkPrimerBtn = document.getElementById('checkPrimer');
+        const primerFb = document.getElementById('primerFb');
+        checkPrimerBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#primerCheckboxes input');
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+            const correct = selected.includes('BamHI_HindIII') && selected.length === 1;
+            if (correct) {
+                primerFb.innerHTML = '✅ 正确！ppk基因扩增时，上游引物加BamHI位点，下游引物加HindIII位点，便于定向克隆。';
+                primerFb.className = 'feedback correct-fb';
+            } else {
+                primerFb.innerHTML = '❌ 正确答案是：BamHI 和 HindIII。请重新选择。';
+                primerFb.className = 'feedback wrong-fb';
+            }
+        });
+
+        // ---------- PCR步骤排序（使用耐高温的DNA聚合酶）----------
+        const standardSteps = [
+            "变性: 加热至94-98℃，DNA双链解开",
+            "退火: 降温至50-65℃，引物与模板特异性结合",
+            "延伸: 72℃ 耐高温的DNA聚合酶催化合成新链",
+            "循环: 重复变性→退火→延伸 25-35个循环",
+            "终延伸: 72℃延长5-10分钟，补齐产物"
+        ];
+        let currentSteps = [...standardSteps];
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function renderStepCards() {
+            const container = document.getElementById('stepContainer');
+            container.innerHTML = '';
+            currentSteps.forEach((step, idx) => {
+                const card = document.createElement('div');
+                card.className = 'step-card';
+                card.setAttribute('draggable', 'true');
+                card.setAttribute('data-index', idx);
+                card.innerHTML = `<span style="margin-right:8px; font-weight:bold;">${idx+1}.</span><span>${step}</span>`;
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragover', handleDragOver);
+                card.addEventListener('drop', handleDrop);
+                container.appendChild(card);
+            });
+        }
+
+        let dragSrcIndex = null;
+        function handleDragStart(e) {
+            const card = e.target.closest('.step-card');
+            if (!card) return;
+            dragSrcIndex = parseInt(card.getAttribute('data-index'));
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', dragSrcIndex);
+        }
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+        function handleDrop(e) {
+            e.preventDefault();
+            const targetCard = e.target.closest('.step-card');
+            if (!targetCard) return;
+            const targetIndex = parseInt(targetCard.getAttribute('data-index'));
+            if (dragSrcIndex !== null && dragSrcIndex !== targetIndex) {
+                let newSteps = [...currentSteps];
+                [newSteps[dragSrcIndex], newSteps[targetIndex]] = [newSteps[targetIndex], newSteps[dragSrcIndex]];
+                currentSteps = newSteps;
+                renderStepCards();
+            }
+            dragSrcIndex = null;
+        }
+
+        function checkPcrOrder() {
+            let correct = true;
+            for (let i = 0; i < standardSteps.length; i++) {
+                if (currentSteps[i] !== standardSteps[i]) {
+                    correct = false;
+                    break;
+                }
+            }
+            const fb = document.getElementById('pcrFeedback');
+            if (correct) {
+                fb.innerHTML = '✅ PCR步骤排序完全正确！顺序为：变性 → 退火 → 延伸 → 循环 → 终延伸。';
+                fb.className = 'feedback correct-fb';
+            } else {
+                fb.innerHTML = '⚠️ 顺序错误，正确顺序为：变性 → 退火 → 延伸 → 循环 → 终延伸。可点击“显示正确顺序”参考。';
+                fb.className = 'feedback wrong-fb';
+            }
+        }
+        function resetPcr() {
+            currentSteps = shuffleArray([...standardSteps]);
+            renderStepCards();
+            document.getElementById('pcrFeedback').innerHTML = '';
+        }
+        function showCorrectOrder() {
+            currentSteps = [...standardSteps];
+            renderStepCards();
+            document.getElementById('pcrFeedback').innerHTML = '📖 已恢复标准PCR操作顺序。';
+            document.getElementById('pcrFeedback').className = 'feedback correct-fb';
+        }
+
+        document.getElementById('checkPcrOrder').addEventListener('click', checkPcrOrder);
+        document.getElementById('resetPcrOrder').addEventListener('click', resetPcr);
+        document.getElementById('showPcrAnswer').addEventListener('click', showCorrectOrder);
+
+        currentSteps = shuffleArray([...standardSteps]);
+        renderStepCards();
+
+        // ---------- 第三部分交互 ----------
+        const checkLigaseBtn = document.getElementById('checkLigase');
+        const ligaseFb = document.getElementById('ligaseFb');
+        checkLigaseBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#ligaseCheckboxes input');
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+            const correct = selected.includes('BamHI') && selected.includes('HindIII') && selected.includes('DNA连接酶') && selected.length === 3;
+            if (correct) {
+                ligaseFb.innerHTML = '✅ 正确！用 BamHI 和 HindIII 双酶切，再用 DNA连接酶 连接构建重组质粒。';
+                ligaseFb.className = 'feedback correct-fb';
+            } else {
+                ligaseFb.innerHTML = '❌ 正确答案是 A (BamHI)、C (HindIII) 和 E (DNA连接酶)。';
+                ligaseFb.className = 'feedback wrong-fb';
+            }
+        });
+
+        const checkCompetentBtn = document.getElementById('checkCompetent');
+        const competentFb = document.getElementById('competentFb');
+        checkCompetentBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#competentCheckboxes input');
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+            const correct = selected.includes('Ca2+') && selected.length === 1;
+            if (correct) {
+                competentFb.innerHTML = '✅ 正确！使用 Ca²⁺（钙离子）处理细菌，使细胞成为感受态，便于摄取外源DNA。';
+                competentFb.className = 'feedback correct-fb';
+            } else {
+                competentFb.innerHTML = '❌ 正确答案是 Ca²⁺。';
+                competentFb.className = 'feedback wrong-fb';
+            }
+        });
+
+        const checkExpressBtn = document.getElementById('checkExpress');
+        const expressFb = document.getElementById('expressFb');
+        checkExpressBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#expressCheckboxes input');
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+            const correct = selected.includes('抗原抗体杂交') && selected.length === 1;
+            if (correct) {
+                expressFb.innerHTML = '✅ 正确！抗原-抗体杂交技术（Western Blot）可特异性检测ppk蛋白的表达。';
+                expressFb.className = 'feedback correct-fb';
+            } else {
+                expressFb.innerHTML = '❌ 正确答案是 C. 抗原-抗体杂交技术。';
+                expressFb.className = 'feedback wrong-fb';
+            }
+        });
+    })();
+</script>
+</body>
+</html>
